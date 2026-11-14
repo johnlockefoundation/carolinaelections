@@ -117,16 +117,19 @@ export default function PredictionsBlock({ districtId, race, markets, polls }) {
           {result && !uncontested && (
             <div className="leanbar-marker-labels">
               {(() => {
-                const p1 = parseFloat(markerPos(predicted.party, predicted.value).left);
-                const p2 = parseFloat(markerPos(result.winner, Math.abs(result.margin_pp)).left);
-                const mid = (p1 + p2) / 2;
-                const gap = Math.max(Math.abs(p2 - p1), 24);
-                const leftP = Math.max(2, mid - gap / 2);
-                const leftA = Math.min(98, mid + gap / 2);
+                const pPred = parseFloat(markerPos(predicted.party, predicted.value).left);
+                const pAct = parseFloat(markerPos(result.winner, Math.abs(result.margin_pp)).left);
+                const leftMarker = Math.min(pPred, pAct);
+                const rightMarker = Math.max(pPred, pAct);
+                const mid = (leftMarker + rightMarker) / 2;
+                const gap = Math.max(rightMarker - leftMarker, 24);
+                const leftPos = Math.max(2, mid - gap / 2);
+                const rightPos = Math.min(98, mid + gap / 2);
+                const predOnLeft = pPred <= pAct;
                 return (
                   <>
-                    <span style={{ left: `${leftP}%` }}>Predicted</span>
-                    <span style={{ left: `${leftA}%` }}>Actual</span>
+                    <span style={{ left: `${predOnLeft ? leftPos : rightPos}%` }}>Predicted</span>
+                    <span style={{ left: `${predOnLeft ? rightPos : leftPos}%` }}>Actual</span>
                   </>
                 );
               })()}
