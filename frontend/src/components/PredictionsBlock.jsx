@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import CollapsibleMetric from './CollapsibleMetric.jsx';
 import { loadKalshiResults, kalshiResultFor } from '../lib/kalshiResults.js';
 import { assetUrl, getMov } from '../api.js';
+import { aggregatePollUrl } from './PollBlock.jsx';
 
 function markerPos(party, value) {
   const dir = party === 'R' ? 1 : -1;
@@ -160,14 +161,29 @@ export default function PredictionsBlock({ districtId, race, markets, polls }) {
             )}
             {!isCivitas && kalshiMargin && (
               <div className="ballot-row">
-                <span className="ballot-row-party">KALSHI PREDICTED MOV</span>
+                <span className="ballot-row-party">
+                  {markets?.source_url ? (
+                    <a className="metric-title-link" href={markets.source_url} target="_blank" rel="noreferrer">KALSHI PREDICTED MOV ↗</a>
+                  ) : (
+                    'KALSHI PREDICTED MOV'
+                  )}
+                </span>
                 <span className="ballot-row-share" />
                 <span className={`ballot-row-count ${kalshiMargin.startsWith('D') ? 'val-d' : 'val-r'}`}>{kalshiMargin}</span>
               </div>
             )}
             {!isCivitas && pollsRow && (
               <div className="ballot-row">
-                <span className="ballot-row-party">POLL MARGIN, ELECTION DAY</span>
+                <span className="ballot-row-party">
+                  {(() => {
+                    const url = aggregatePollUrl(race, true);
+                    return url ? (
+                      <a className="metric-title-link" href={url} target="_blank" rel="noreferrer">POLL MARGIN, ELECTION DAY ↗</a>
+                    ) : (
+                      'POLL MARGIN, ELECTION DAY'
+                    );
+                  })()}
+                </span>
                 <span className="ballot-row-share" />
                 <span className={`ballot-row-count ${pollMargin.startsWith('D') ? 'val-d' : 'val-r'}`}>{pollMargin}</span>
               </div>
