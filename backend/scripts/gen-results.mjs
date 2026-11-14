@@ -56,9 +56,10 @@ for (const [id, v] of Object.entries(RAW)) {
   const total = v.dem + v.rep + v.other;
   const margin = v.dem - v.rep;
   const winner = margin > 0 ? 'D' : margin < 0 ? 'R' : 'TIE';
-  const pre = preElection[id];
-  const flippedToD = winner === 'D' && !!pre && pre.rep > pre.dem;
-  const flippedToR = winner === 'R' && !!pre && pre.dem > pre.rep;
+  // Authoritative 2026 federal flip list (user-provided).
+  const FEDERAL_FLIPS = new Set(['NC-03','NC-05','NC-06','NC-09','NC-11','NC-13','NC-14']);
+  const flippedToD = winner === 'D' && FEDERAL_FLIPS.has(id);
+  const flippedToR = false;
   out[id] = {
     dem_votes: v.dem, rep_votes: v.rep, other_votes: v.other, total_votes: total,
     margin_votes: margin, margin_pp: +((margin / total) * 100).toFixed(2),
