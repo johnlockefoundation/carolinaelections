@@ -7,6 +7,8 @@ import MoneyBlock from './MoneyBlock.jsx';
 import PendingMetric from './PendingMetric.jsx';
 import DistrictNews from './DistrictNews.jsx';
 import { trackerUrl } from '../lib/tracker.js';
+import { assetUrl } from '../api.js';
+import { useState, useEffect } from 'react';
 
 export default function RacePanel({ race, loading }) {
   if (loading && !race) {
@@ -15,6 +17,22 @@ export default function RacePanel({ race, loading }) {
   if (!race) return null;
 
   const polls = race.polls || {};
+
+  const [result, setResult] = useState(null);
+  const [kalshiResult, setKalshiResult] = useState(null);
+  useEffect(() => {
+    if (!race?.district_id) return;
+    let alive = true;
+    fetch(assetUrl('results.json'))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && d && d.races) setResult(d.races[race.district_id]); })
+      .catch(() => {});
+    fetch(assetUrl('kalshi-results.json'))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && d && d.races) setKalshiResult(d.races[race.district_id]); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [race?.district_id]);
 
   // Money is picked by chamber, not by a `||` chain. Every read returns the full
   // shape with available false, so `race.state_funds || race.money` always found
@@ -111,9 +129,29 @@ export default function RacePanel({ race, loading }) {
     ? <MoneyBlock key="money" summary={moneyS} candidates={race.candidates} districtId={race.district_id} />
     : <PendingMetric key="money-pending" title="MONEY" />;
 
+  // Seat-change label: D/R FLIP or HOLD, from the actual winner vs. the
+  // pre-election baseline (Civitas lean for state races, Kalshi favorite for
+  // federal). Only shown when both sides are known.
+  let seatOutcome = null;
+  if (result?.winner) {
+    let baseline = null;
+    if (isStateRace) baseline = race.partisan?.party || null;
+    else if (kalshiResult) baseline = kalshiResult.pre_dem > kalshiResult.pre_rep ? 'D' : kalshiResult.pre_dem < kalshiResult.pre_rep ? 'R' : null;
+    if (baseline) {
+      const w = result.winner;
+      const flip = w !== baseline;
+      seatOutcome = `${w} ${flip ? 'FLIP' : 'HOLD'}`;
+    }
+  }
+
   return (
     <aside className="panel">
       <h2 className="panel-title">{race.title}</h2>
+      {seatOutcome && (
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', marginBottom: 8, color: seatOutcome.startsWith('D') ? 'var(--d)' : 'var(--r)' }}>
+          {seatOutcome}
+        </div>
+      )}
 
       {/* One stack for every chamber. News sits inside it rather than below it,
           so the box above a story is the same width and aligned with the box
