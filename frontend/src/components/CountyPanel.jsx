@@ -74,11 +74,8 @@ export default function CountyPanel({ selectedId }) {
     <>
       <section className="panel">
         <h2 className="panel-title" style={{ fontSize: 18 }}>{county.name} County</h2>
-        <div className="dim" style={{ fontSize: 11, marginBottom: 4 }}>
-          Registered voters: {fmt(totalFrom)} → {fmt(totalTo)} ({fmtSigned(totalTo - totalFrom)})
-        </div>
-        <div className="dim" style={{ fontSize: 11 }}>
-          Change since last election ({data.weeks[from]} → {data.weeks[to]})
+        <div style={{ fontSize: 13, lineHeight: 1.4, marginTop: 4 }}>
+          {county.name} {totalTo - totalFrom >= 0 ? 'gained' : 'lost'} {fmt(Math.abs(totalTo - totalFrom))} registered voters, while becoming {Math.abs(dMargin).toFixed(2)} pp more {dMargin >= 0 ? 'Democratic' : 'Republican'}.
         </div>
       </section>
 
