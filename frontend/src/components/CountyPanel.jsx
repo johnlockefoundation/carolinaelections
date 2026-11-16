@@ -181,6 +181,9 @@ export default function CountyPanel({ selectedId }) {
           </div>
         </div>
       </section>
+      <div className="dim" style={{ fontSize: 11, textAlign: 'center', padding: '4px 0' }}>
+        <a href="https://johnlockefoundation.github.io/registrations/" target="_blank" rel="noreferrer">Open in registrations ↗</a>
+      </div>
     </>
   );
 }

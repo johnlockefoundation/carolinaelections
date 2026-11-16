@@ -135,6 +135,10 @@ export default function App() {
         </label>
       </div>
 
+      <div className="corner-links">
+        <a href="https://johnlockefoundation.github.io/registrations/" target="_blank" rel="noreferrer">Registrations ↗</a>
+        <a href="https://johnlockefoundation.github.io/early-voting/" target="_blank" rel="noreferrer">Early voting ↗</a>
+      </div>
       <img className="corner-logo" src={assetUrl('assets/locke-logo-white.png')} alt="John Locke Foundation" width="1200" height="346" />
 
       {error && <div className="error-banner">Could not load data: {error}</div>}

@@ -190,6 +190,9 @@ export default function BallotsBlock({ summary, trackerHref, districtId }) {
         minor-party requests are not counted.
       </div>
       <BallotChart series={series} />
+      <div className="ballot-foot dim" style={{ marginTop: 6 }}>
+        <a href="https://johnlockefoundation.github.io/early-voting/" target="_blank" rel="noreferrer">Open in early voting ↗</a>
+      </div>
     </CollapsibleMetric>
   );
 }
