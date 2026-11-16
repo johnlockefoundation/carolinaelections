@@ -29,7 +29,7 @@ The tracker is designed to show only what is verifiable: names and the Civitas l
 | `frontend/src/lib/` | Data helpers (races, colors, map, format, candidateName) |
 | `frontend/public/data/` | Bundled data: `reference/` (plugin static floor), `geo/` (district boundaries), `demo-data/` (Pages/demo) |
 | `supabase/migrations/` | PostgreSQL schema + RPCs (read-only functions the client calls) |
-| `.github/workflows/` | Deploys Pages to `johnlockefoundation.github.io/nc26` |
+| `.github/workflows/` | Deploys Pages to `johnlockefoundation.github.io/carolinaelections` |
 
 ## Core policies
 - **News coverage is restricted to in-house outlets only:** `backend/src/ingest/config.js` defines `NEWS_OUTLETS = ["John Locke Foundation", "Carolina Journal"]` and `ALLOWED_NEWS_OUTLETS` enforces this in both fetch and ingest. Other outlets are dropped.
@@ -63,7 +63,7 @@ To write to Supabase, add a migration in `supabase/migrations/` and run
 
 ## Build targets
 ```bash
-# Pages build (uses demo/static + VITE_BASE=/nc26/)
+# Pages build (uses demo/static + VITE_BASE=/carolinaelections/)
 npm run build:pages -w frontend
 
 # Plugin build (exports reference layer + Vite plugin mode)

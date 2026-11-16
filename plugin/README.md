@@ -1,6 +1,6 @@
 # Carolina Election Map — WordPress plugin
 
-Embeds the [Carolina Election Map](https://johnlockefoundation.github.io/nc26/) in
+Embeds the [Carolina Election Map](https://johnlockefoundation.github.io/carolinaelections/) in
 WordPress: North Carolina's 2026 U.S. House, U.S. Senate, NC Senate and NC House
 races, with prediction-market prices, poll averages, fundraising totals and
 district demographics.
