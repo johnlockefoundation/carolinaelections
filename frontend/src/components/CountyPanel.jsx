@@ -16,6 +16,32 @@ const RACE_ROWS = [
 function fmt(n) { return Number(n ?? 0).toLocaleString('en-US'); }
 function fmtSigned(n) { const v = Number(n ?? 0); return (v > 0 ? '+' : v < 0 ? '−' : '') + fmt(Math.abs(v)); }
 
+
+function PieChart({ values, colors, size = 96 }) {
+  const total = values.reduce((a, b) => a + b, 0);
+  if (!total) return null;
+  const r = size / 2;
+  const cx = r, cy = r;
+  let angle = -Math.PI / 2;
+  const slices = values.map((v, i) => {
+    const frac = v / total;
+    const a = angle;
+    angle += frac * Math.PI * 2;
+    const x1 = cx + r * Math.cos(a);
+    const y1 = cy + r * Math.sin(a);
+    const x2 = cx + r * Math.cos(angle);
+    const y2 = cy + r * Math.sin(angle);
+    const large = frac > 0.5 ? 1 : 0;
+    const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+    return <path key={i} d={d} fill={colors[i]} stroke="#0f172a" strokeWidth="1" />;
+  });
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block' }}>
+      {slices}
+    </svg>
+  );
+}
+
 export default function CountyPanel({ selectedId }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
@@ -79,6 +105,22 @@ export default function CountyPanel({ selectedId }) {
             </tr>
           </tbody>
         </table>
+        <div style={{ display: 'flex', gap: 12, marginTop: 10, flexWrap: 'wrap' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div className="dim" style={{ fontSize: 10, marginBottom: 4 }}>2024</div>
+            <PieChart
+              values={[val(county,'dem',from), val(county,'rep',from), val(county,'unaff',from), val(county,'other',from)]}
+              colors={['#2563eb','#dc2626','#6b7280','#9ca3af']}
+            />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="dim" style={{ fontSize: 10, marginBottom: 4 }}>2026</div>
+            <PieChart
+              values={[val(county,'dem',to), val(county,'rep',to), val(county,'unaff',to), val(county,'other',to)]}
+              colors={['#2563eb','#dc2626','#6b7280','#9ca3af']}
+            />
+          </div>
+        </div>
         <div style={{ marginTop: 8, fontSize: 12 }}>
           Partisan lean: <strong>{Math.abs(marginFrom).toFixed(2)} pp more {marginFrom >= 0 ? 'Democratic' : 'Republican'}</strong>
           {' → '}
@@ -114,6 +156,22 @@ export default function CountyPanel({ selectedId }) {
             </tr>
           </tbody>
         </table>
+        <div style={{ display: 'flex', gap: 12, marginTop: 10, flexWrap: 'wrap' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div className="dim" style={{ fontSize: 10, marginBottom: 4 }}>2024</div>
+            <PieChart
+              values={[val(county,'white',from), val(county,'black',from), val(county,'otherRace',from)]}
+              colors={['#cbd5e1','#1f2937','#94a3b8']}
+            />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div className="dim" style={{ fontSize: 10, marginBottom: 4 }}>2026</div>
+            <PieChart
+              values={[val(county,'white',to), val(county,'black',to), val(county,'otherRace',to)]}
+              colors={['#cbd5e1','#1f2937','#94a3b8']}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
