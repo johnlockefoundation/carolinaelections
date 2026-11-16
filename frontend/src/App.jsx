@@ -66,6 +66,7 @@ export default function App() {
 
   // Keep a valid selection for the current race type.
   useEffect(() => {
+    if (raceType === 'county') return;
     if (!activeMapData) return;
     const stillValid = selectedId && races.some((r) => r.district_id === selectedId);
     if (!stillValid) setSelectedId(races[0]?.district_id || null);
