@@ -71,7 +71,7 @@ export default function CountyPanel({ selectedId }) {
   const dMargin = marginTo - marginFrom;
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <section className="panel">
         <h2 className="panel-title" style={{ fontSize: 18 }}>{county.name} County</h2>
         <div style={{ fontSize: 13, lineHeight: 1.4, marginTop: 4 }}>
@@ -184,6 +184,6 @@ export default function CountyPanel({ selectedId }) {
       <div className="dim" style={{ fontSize: 11, textAlign: 'center', padding: '4px 0' }}>
         <a href="https://johnlockefoundation.github.io/registrations/" target="_blank" rel="noreferrer">Open in registrations ↗</a>
       </div>
-    </>
+    </div>
   );
 }
