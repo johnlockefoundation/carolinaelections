@@ -5,6 +5,8 @@ import NCMap from './components/NCMap.jsx';
 import UnifiedSearch from './components/UnifiedSearch.jsx';
 import MiniGauge from './components/MiniGauge.jsx';
 import RacePanel from './components/RacePanel.jsx';
+import CountyMap from './components/CountyMap.jsx';
+import CountyPanel from './components/CountyPanel.jsx';
 
 const FETCH_KEYS = ['us_house', 'us_senate', 'state_house', 'state_senate'];
 
@@ -43,7 +45,7 @@ export default function App() {
     return () => { alive = false; };
   }, []);
 
-  const mapData = mapsByType[raceType === 'congress' ? 'us_house' : raceType];
+  const mapData = raceType === 'county' ? { races: [], features: [] } : mapsByType[raceType === 'congress' ? 'us_house' : raceType];
   // For the congress view, merge us_house + us_senate races/features.
   const congressMerged = useMemo(() => {
     if (raceType !== 'congress') return null;
@@ -70,6 +72,7 @@ export default function App() {
   }, [activeMapData, raceType, races, selectedId]);
 
   useEffect(() => {
+    if (raceType === 'county') { setDetail(null); return; }
     if (!selectedId) { setDetail(null); return; }
     let alive = true;
     setLoadingDetail(true);
@@ -78,7 +81,7 @@ export default function App() {
       .catch((e) => { if (alive) setError(String(e)); })
       .finally(() => { if (alive) setLoadingDetail(false); });
     return () => { alive = false; };
-  }, [selectedId]);
+  }, [selectedId, raceType]);
 
   function handleSelectRace(rt, districtId) {
     setRaceType(rt);
@@ -128,22 +131,34 @@ export default function App() {
           <div className="map-toolbar">
             <RaceTypeToggle value={raceType} onChange={setRaceType} />
           </div>
-          {loading && <div className="panel-loading">Loading…</div>}
-          {!loading && (
-            <NCMap
-              raceType={raceType}
-              features={features}
-              races={races}
-              outline={outline}
+          {raceType === 'county' ? (
+            <CountyMap
               selectedId={selectedId}
               onSelect={setSelectedId}
               zipFocus={zipFocus}
             />
+          ) : (
+            <>
+              {loading && <div className="panel-loading">Loading…</div>}
+              {!loading && (
+                <NCMap
+                  raceType={raceType}
+                  features={features}
+                  races={races}
+                  outline={outline}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                  zipFocus={zipFocus}
+                />
+              )}
+            </>
           )}
         </section>
 
         <div className="panel-column">
-          <RacePanel race={detail} loading={loadingDetail} />
+          {raceType === 'county'
+            ? <CountyPanel selectedId={selectedId} />
+            : <RacePanel race={detail} loading={loadingDetail} />}
         </div>
       </main>
     </div>

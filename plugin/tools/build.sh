@@ -177,7 +177,7 @@ shipped="$(grep -m1 ' \* Version:' "$VERIFY/$PLUGIN_SLUG/$PLUGIN_SLUG.php" | awk
 echo "  zip version matches source ($shipped)"
 
 # Only the plugin's own files may ship.
-allowed='\.php$|\.md$|\.css$|\.js$|\.json$|\.png$'
+allowed='\.php$|\.md$|\.css$|\.js$|\.json$|\.geojson$|\.png$'
 if unzip -Z1 "$DIST/$ZIP_NAME" | grep -v '/$' | grep -vE "$allowed"; then
   die "unexpected file type in the zip"
 fi

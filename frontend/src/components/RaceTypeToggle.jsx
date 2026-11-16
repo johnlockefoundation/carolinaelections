@@ -1,8 +1,9 @@
 const TYPES = [
-  { key: 'us_senate', label: 'U.S. Senate' },
+  { key: 'us_senate', label: 'State level races' },
   { key: 'us_house', label: 'U.S. House' },
   { key: 'state_senate', label: 'NC Senate' },
   { key: 'state_house', label: 'NC House' },
+  { key: 'county', label: 'County' },
 ];
 
 export default function RaceTypeToggle({ value, onChange }) {
