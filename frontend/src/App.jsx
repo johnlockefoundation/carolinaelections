@@ -7,6 +7,7 @@ import MiniGauge from './components/MiniGauge.jsx';
 import RacePanel from './components/RacePanel.jsx';
 import CountyMap from './components/CountyMap.jsx';
 import CountyPanel from './components/CountyPanel.jsx';
+import { loadCountyData } from './lib/countyData.js';
 
 const FETCH_KEYS = ['us_house', 'us_senate', 'state_house', 'state_senate'];
 
@@ -71,6 +72,17 @@ export default function App() {
     const stillValid = selectedId && races.some((r) => r.district_id === selectedId);
     if (!stillValid) setSelectedId(races[0]?.district_id || null);
   }, [activeMapData, raceType, races, selectedId]);
+
+  useEffect(() => {
+    if (raceType !== 'county' || selectedId != null) return;
+    let alive = true;
+    loadCountyData().then((d) => {
+      if (!alive) return;
+      const first = (d.counties || []).find((c) => c.id !== 1);
+      if (first) setSelectedId(first.id);
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [raceType, selectedId]);
 
   useEffect(() => {
     if (raceType === 'county') { setDetail(null); return; }
